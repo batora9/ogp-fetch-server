@@ -22,7 +22,7 @@ app.get("/", async (c) => {
     // Extract the favicon, description, and title from the HTML
     const faviconMatch = meta.match(/<link rel="icon" href="(.*?)"/);
     const descriptionMatch = meta.match(/<meta name="description" content="(.*?)"/);
-    const titleMatch = meta.match(/<title>(.*?)<\/title>/);
+    const titleMatch = meta.match(/<title>(.*)<\/title>/);
     const imageMatch = meta.match(/<meta property="og:image" content="(.*?)"/);
 
     // Get the base URL
