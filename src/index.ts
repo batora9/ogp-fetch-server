@@ -8,13 +8,13 @@ app.get("/", async (c) => {
 
   // Check if the URL is provided
   if (!url) {
-    return c.text("Bad Request: URL is required", 400);
+    return c.json("Bad Request: URL is required", 400);
   }
 
   try {
     const response = await fetch(url);
     if (!response.ok) {
-      return c.text("Bad Request: Invalid URL", 400);
+      return c.json("Bad Request: Invalid URL", 400);
     }
 
     const meta = await response.text();
@@ -40,7 +40,7 @@ app.get("/", async (c) => {
     return c.json(result);
   } catch (error) {
     console.error("Error fetching URL:", error);
-    return c.text("Internal Server Error", 500);
+    return c.json("Internal Server Error", 500);
   }
 });
 
