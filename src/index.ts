@@ -20,16 +20,24 @@ app.get("/", async (c) => {
     const meta = await response.text();
     const $ = cheerio.load(meta);
 
-    const title = $('meta[property="og:title"]').attr('content');
-    const description = $('meta[property="og:description"]').attr('content');
-    const favicon = $('link[rel="icon"]').attr('href');
-    const image = $('meta[property="og:image"]').attr('content');
+    // Extract the favicon, description, and title from the HTML
+    const faviconMatch = meta.match(/<link rel="icon" href="(.*?)"/);
+    const descriptionMatch = meta.match(
+      /<meta name="description" content="(.*?)"/
+    );
+    const titleMatch = meta.match(/<title>(.*)<\/title>/);
+    const imageMatch = meta.match(/<meta property="og:image" content="(.*?)"/);
+
+    const ogTitle = $('meta[property="og:title"]').attr("content");
+    const ogDescription = $('meta[property="og:description"]').attr("content");
+    const ogFavicon = $('link[rel="icon"]').attr("href");
+    const ogImage = $('meta[property="og:image"]').attr("content");
 
     const result = {
-      title,
-      description,
-      favicon,
-      image,
+      title: ogTitle || (titleMatch ? titleMatch[1] : null),
+      description: ogDescription || (descriptionMatch ? descriptionMatch[1] : null),
+      favicon: ogFavicon || (faviconMatch ? faviconMatch[1] : null),
+      image: ogImage || (imageMatch ? imageMatch[1] : null),
     };
 
     return c.json(result);
