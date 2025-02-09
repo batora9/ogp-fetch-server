@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import * as cheerio from "cheerio";
 
 const app = new Hono();
 
@@ -16,25 +17,19 @@ app.get("/", async (c) => {
     if (!response.ok) {
       return c.json("Bad Request: Invalid URL", 400);
     }
-
     const meta = await response.text();
+    const $ = cheerio.load(meta);
 
-    // Extract the favicon, description, and title from the HTML
-    const faviconMatch = meta.match(/<link rel="icon" href="(.*?)"/);
-    const descriptionMatch = meta.match(/<meta name="description" content="(.*?)"/);
-    const titleMatch = meta.match(/<title>(.*?)<\/title>/);
-    const imageMatch = meta.match(/<meta property="og:image" content="(.*?)"/);
-
-    // Get the base URL
-    const baseUrl = new URL(url);
-    const faviconUrl = faviconMatch ? new URL(faviconMatch[1], baseUrl).toString() : null;
-    const imageUrl = imageMatch ? new URL(imageMatch[1], baseUrl).toString() : null;
+    const title = $('meta[property="og:title"]').attr('content');
+    const description = $('meta[property="og:description"]').attr('content');
+    const favicon = $('link[rel="icon"]').attr('href');
+    const image = $('meta[property="og:image"]').attr('content');
 
     const result = {
-      title: titleMatch ? titleMatch[1] : null,
-      description: descriptionMatch ? descriptionMatch[1] : null,
-      favicon: faviconUrl,
-      image: imageUrl,
+      title,
+      description,
+      favicon,
+      image,
     };
 
     return c.json(result);
