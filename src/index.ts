@@ -30,14 +30,24 @@ app.get("/", async (c) => {
 
     const ogTitle = $('meta[property="og:title"]').attr("content");
     const ogDescription = $('meta[property="og:description"]').attr("content");
-    const ogFavicon = $('link[rel="icon"]').attr("href");
-    const ogImage = $('meta[property="og:image"]').attr("content");
+    let ogFavicon = $('link[rel="icon"]').attr("href");
+    let ogImage = $('meta[property="og:image"]').attr("content");
+
+    // ogFaviconがhttpから始まっていない場合、urlを付与する
+    if (ogFavicon && !ogFavicon.match(/^http/)) {
+      ogFavicon = url + ogFavicon;
+    }
+
+    // ogImageがhttpから始まっていない場合、urlを付与する
+    if (ogImage && !ogImage.match(/^http/)) {
+      ogImage = url + ogImage;
+    }
 
     const result = {
       title: ogTitle || (titleMatch ? titleMatch[1] : null),
       description: ogDescription || (descriptionMatch ? descriptionMatch[1] : null),
-      favicon: ogFavicon || (faviconMatch ? faviconMatch[1] : null),
-      image: ogImage || (imageMatch ? imageMatch[1] : null)
+      favicon: ogFavicon || (faviconMatch ? url + faviconMatch[1] : null),
+      image: ogImage || (imageMatch ? url + imageMatch[1] : null)
     };
 
     return c.json(result);
