@@ -37,7 +37,7 @@ app.get("/", async (c) => {
       title: ogTitle || (titleMatch ? titleMatch[1] : null),
       description: ogDescription || (descriptionMatch ? descriptionMatch[1] : null),
       favicon: ogFavicon || (faviconMatch ? faviconMatch[1] : null),
-      image: ogImage || (imageMatch ? imageMatch[1] : null),
+      image: ogImage || (imageMatch ? imageMatch[1] : null)
     };
 
     return c.json(result);
